@@ -407,3 +407,75 @@ mutation {
   }
 }
 ```
+
+### 데이터 수정하기
+
+**1. Mutation - 수정 루트 타입**
+
+수정할 Equipment의 요소 값들을 인자로 받고 추가된 Equipment를 반환
+
+```js
+type Mutation {
+    editEquipment(
+        id: String,
+        used_by: String,
+        count: Int,
+        new_or_used: String
+    ): Equipment
+    ...
+}
+```
+
+**2. 수정 resolver**
+
+```js
+const resolvers = {
+  Mutation: {
+    // ...
+    editEquipment: (parent, args, context, info) => {
+      return database.equipments
+        .filter(equipment => {
+          return equipment.id === args.id;
+        })
+        .map(equipment => {
+          Object.assign(equipment, args);
+          return equipment;
+        })[0];
+    },
+    // ...
+  },
+};
+```
+
+**3. 수정 요청**
+
+```js
+mutation {
+  editEquipment (
+    id: "pen tablet",
+    new_or_used: "new",
+    count: 30,
+    used_by: "designer"
+  ) {
+    id
+    new_or_used
+    count
+    used_by
+  }
+}
+```
+
+**↓ 반환 데이터**
+
+```json
+{
+  "data": {
+    "editEquipment": {
+      "id": "pen tablet",
+      "new_or_used": "new",
+      "count": 30,
+      "used_by": "designer"
+    }
+  }
+}
+```
