@@ -7,6 +7,7 @@ const { ApolloServer, gql } = require('apollo-server');
 const typeDefs = gql`
   type Query {
     teams: [Team]
+    team(id: Int): Team
     equipments: [Equipment]
     supplies: [Supply]
   }
@@ -36,6 +37,9 @@ const resolvers = {
   Query: {
     // database의 teams를 모두 반환하는 함수
     teams: () => database.teams,
+    team: (parent, args, context, info) =>
+      // [0] -> 배열 내부의 첫번째 요소를 반환 (filter로 배열 요소를 하나만 받아오도록 설정했으므로 첫번째 요소만 반환하면 됨)
+      database.teams.filter(team => team.id === args.id)[0],
     equipments: () => database.equipments,
     supplies: () => database.supplies,
   },

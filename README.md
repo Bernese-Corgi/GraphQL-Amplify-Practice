@@ -137,6 +137,8 @@ query {
 }
 ```
 
+![](https://user-images.githubusercontent.com/72931773/173052846-ae4664b4-d30c-4497-b7ad-40426717f4f4.png)
+
 또는
 
 ```
@@ -147,3 +149,45 @@ query {
   }
 }
 ```
+
+![](https://user-images.githubusercontent.com/72931773/173052873-6364ecd1-1524-42b1-bde6-26755accfa8f.png)
+
+### 특정 데이터를 반환하는 쿼리 만들기
+
+```js
+const typeDefs = gql`
+  type Query {
+    // ...
+    team(id: Int): Team
+  }
+  // ...
+`;
+
+// resolvers : 서비스의 액션들을 함수로 지정. 요청에 따라 데이터를 반환, 입력, 수정, 삭제한다.
+const resolvers = {
+  Query: {
+    // ...
+    team: (parent, args, context, info) =>
+      // [0] -> 배열 내부의 첫번째 요소를 반환 (filter로 배열 요소를 하나만 받아오도록 설정했으므로 첫번째 요소만 반환하면 됨)
+      database.teams.filter(team => team.id === args.id)[0],
+  },
+};
+```
+
+**↓ 쿼리 요청**
+
+```
+query {
+  team(id: 4) {
+    id
+    manager
+    office
+    extension_number
+    mascot
+    cleaning_duty
+    project
+  }
+}
+```
+
+<img width="927" alt="image" src="https://user-images.githubusercontent.com/72931773/173052697-7bf7a93a-1b94-4c55-aee2-dcdb05ce2519.png">
