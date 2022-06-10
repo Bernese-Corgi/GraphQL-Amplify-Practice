@@ -19,6 +19,7 @@ const typeDefs = gql`
     mascot: String
     cleaning_duty: String
     project: String
+    supplies: [Supply]
   }
   type Equipment {
     id: String
@@ -35,8 +36,14 @@ const typeDefs = gql`
 // resolvers : 서비스의 액션들을 함수로 지정. 요청에 따라 데이터를 반환, 입력, 수정, 삭제한다.
 const resolvers = {
   Query: {
-    // database의 teams를 모두 반환하는 함수
-    teams: () => database.teams,
+    // team에 supplies 연결해서 받아오기
+    teams: () =>
+      database.teams.map(team => {
+        team.supplies = database.supplies.filter(
+          supply => supply.team === team.id
+        );
+        return team;
+      }),
     team: (parent, args, context, info) =>
       // [0] -> 배열 내부의 첫번째 요소를 반환 (filter로 배열 요소를 하나만 받아오도록 설정했으므로 첫번째 요소만 반환하면 됨)
       database.teams.filter(team => team.id === args.id)[0],

@@ -191,3 +191,101 @@ query {
 ```
 
 <img width="927" alt="image" src="https://user-images.githubusercontent.com/72931773/173052697-7bf7a93a-1b94-4c55-aee2-dcdb05ce2519.png">
+
+### team에 supplies 연결해서 받아오기
+
+```js
+const typeDefs = gql`
+  type Team {
+    // ...
+    supplies: [Supply]
+  }
+`;
+
+const resolvers = {
+  Query: {
+    // team에 supplies 연결해서 받아오기
+    teams: () =>
+      database.teams.map(team => {
+        team.supplies = database.supplies.filter(
+          supply => supply.team === team.id
+        );
+        return team;
+      }),
+    // ...
+  },
+};
+```
+
+**↓ 쿼리 요청**
+
+```
+query {
+  teams {
+    id
+    manager
+    office
+    extension_number
+    mascot
+    cleaning_duty
+    project
+    supplies {
+      id
+      team
+    }
+  }
+}
+```
+
+<details>
+<summary>요청 반환값</summary>
+<div markdown="1">
+
+```json
+{
+  "data": {
+    "teams": [
+      {
+        "id": 1,
+        "manager": "Mandy Warren",
+        "office": "101A",
+        "extension_number": "#5709",
+        "mascot": "Panda",
+        "cleaning_duty": "Monday",
+        "project": "Hyperion",
+        "supplies": [
+          {
+            "id": "ergonomic mouse",
+            "team": 1
+          },
+          {
+            "id": "mug",
+            "team": 1
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "manager": "Stewart Grant",
+        "office": "101B",
+        "extension_number": "#4012",
+        "mascot": "Tadpole",
+        "cleaning_duty": "Tuesday",
+        "project": "Zen",
+        "supplies": [
+          {
+            "id": "webcam",
+            "team": 2
+          },
+          {
+            "id": "hoodie",
+            "team": 2
+          }
+        ]
+      },
+      // ...
+
+```
+
+</div>
+</details>
