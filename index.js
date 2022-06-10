@@ -13,6 +13,12 @@ const typeDefs = gql`
   }
   type Mutation {
     deleteEquipment(id: String): Equipment
+    insertEquipment(
+      id: String
+      used_by: String
+      count: Int
+      new_or_used: String
+    ): Equipment
   }
   type Team {
     id: Int
@@ -62,6 +68,10 @@ const resolvers = {
         return equipment.id !== args.id;
       });
       return deleted;
+    },
+    insertEquipment: (parent, args, context, info) => {
+      database.equipments.push(args);
+      return args;
     },
   },
 };

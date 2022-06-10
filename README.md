@@ -341,3 +341,69 @@ mutation {
   }
 }
 ```
+
+### 데이터 추가하기
+
+**1. Mutation - 추가 루트 타입**
+
+추가할 Equipment의 요소 값들을 인자로 받고 추가된 Equipment를 반환
+
+```javascript
+type Mutation {
+    insertEquipment(
+        id: String,
+        used_by: String,
+        count: Int,
+        new_or_used: String
+    ): Equipment
+    ...
+}
+```
+
+**2. 추가 resolver**
+
+```javascript
+const resolvers = {
+  // Query: { ... },
+  Mutation: {
+    // deleteEquipment: ...,
+    insertEquipment: (parent, args, context, info) => {
+      database.equipments.push(args);
+      return args;
+    },
+  },
+};
+```
+
+**3. 추가 요청**
+
+```
+mutation {
+  insertEquipment (
+    id: "laptop",
+    used_by: "developer",
+    count: 17,
+    new_or_used: "new"
+  ) {
+    id
+    used_by
+    count
+    new_or_used
+  }
+}
+```
+
+**↓ 반환**
+
+```
+{
+  "data": {
+    "insertEquipment": {
+      "id": "laptop",
+      "used_by": "developer",
+      "count": 17,
+      "new_or_used": "new"
+    }
+  }
+}
+```
