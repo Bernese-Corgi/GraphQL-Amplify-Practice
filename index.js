@@ -59,6 +59,7 @@ const resolvers = {
         );
         return team;
       }),
+    // 특정 데이터 받아오기
     team: (parent, args, context, info) =>
       // [0] -> 배열 내부의 첫번째 요소를 반환 (filter로 배열 요소를 하나만 받아오도록 설정했으므로 첫번째 요소만 반환하면 됨)
       database.teams.filter(team => team.id === args.id)[0],
@@ -66,6 +67,7 @@ const resolvers = {
     supplies: () => database.supplies,
   },
   Mutation: {
+    // 데이터 삭제
     deleteEquipment: (parent, args, context, info) => {
       const deleted = database.equipments.filter(equipment => {
         return equipment.id === args.id;
@@ -75,20 +77,21 @@ const resolvers = {
       });
       return deleted;
     },
+    // 데이터 추가
     insertEquipment: (parent, args, context, info) => {
       database.equipments.push(args);
       return args;
     },
-    editEquipment: (parent, args, context, info) => {
-      return database.equipments
-        .filter(equipment => {
-          return equipment.id === args.id;
-        })
+    // 데이터 수정
+    editEquipment: (parent, args, context, info) =>
+      database.equipments
+        // id가 일치하는 데이터만 필터링
+        .filter(equipment => equipment.id === args.id)
         .map(equipment => {
+          // 새로 작성된 arg 데이터를 할당 (수정 작업)
           Object.assign(equipment, args);
           return equipment;
-        })[0];
-    },
+        })[0],
   },
 };
 
