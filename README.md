@@ -13,7 +13,7 @@
 
 **typeDef**
 
-- GrqphQL 명세에서 사용될 데이터, 요청의 타입 지정
+- GraphQL 명세에서 사용될 데이터, 요청의 타입 지정
 - gpl<span style="color: gray">(template literal tag)</span>로 생성한다.
 
 ```js
@@ -289,3 +289,55 @@ query {
 
 </div>
 </details>
+
+## Mutation
+
+어떤 정보를 가져올 때는 Query를, 데이터의 추가/수정/삭제에는 Mutation을 사용하도록 약속되어있다.
+
+### 데이터 삭제하기
+
+**1. Mutation - 삭제 루트 타입**
+
+String 인자 id를 받는 **deleteEquipment**: 삭제된 Equipment를 반환
+
+```js
+type Mutation {
+    deleteEquipment(id: String): Equipment
+}
+```
+
+**2. 삭제 resolver**
+
+- 삭제 후 결과값으로 받아올 데이터를 deleted 변수에 저장
+- 데이터에서 해당 데이터 삭제 후 deleted 반환
+- 실제 프로젝트에서는 SQL의 DELETE 문 등으로 구현
+
+```javascript
+const resolvers = {
+  // Query: { ... },
+  Mutation: {
+    deleteEquipment: (parent, args, context, info) => {
+      const deleted = database.equipments.filter(equipment => {
+        return equipment.id === args.id;
+      })[0];
+      database.equipments = database.equipments.filter(equipment => {
+        return equipment.id !== args.id;
+      });
+      return deleted;
+    },
+  },
+};
+```
+
+**3. 삭제 요청**
+
+```js
+mutation {
+  deleteEquipment(id: "notebook") {
+    id
+    used_by
+    count
+    new_or_used
+  }
+}
+```
