@@ -124,9 +124,9 @@ const resolvers = {
 };
 ```
 
-**4. 플레이그라운드에서 쿼리 요청해보기**
+**4. 쿼리 요청**
 
-```
+```js
 query {
   equipments {
     id
@@ -141,7 +141,7 @@ query {
 
 또는
 
-```
+```js
 query {
   supplies {
     id
@@ -176,7 +176,7 @@ const resolvers = {
 
 **↓ 쿼리 요청**
 
-```
+```js
 query {
   team(id: 4) {
     id
@@ -377,7 +377,7 @@ const resolvers = {
 
 **3. 추가 요청**
 
-```
+```js
 mutation {
   insertEquipment (
     id: "laptop",
