@@ -172,3 +172,81 @@ const resolvers = [equipments.resolvers, supplies.resolvers];
 
 const server = new ApolloServer({ typeDefs, resolvers });
 ```
+
+## GraphQL의 자료형
+
+### 스칼라 타입
+
+GraphQL 내장 자료형
+
+| 타입    | 설명                                                 |
+| ------- | ---------------------------------------------------- |
+| ID      | 기본적으로는 String이나, 고유 식별자 역할임을 나타냄 |
+| String  | UTF-8 문자열                                         |
+| Int     | 부호가 있는 32비트 정수                              |
+| Float   | 부호가 있는 부동소수점 값                            |
+| Boolean | 참/거짓                                              |
+
+`!` : Non Null, null을 반환할 수 없음
+
+<details>
+<summary>예제</summary>
+<div markdown="1">
+
+```javascript
+type EquipmentAdv {
+  id: ID!
+  used_by: String!
+  count: Int!
+  use_rate: Float
+  is_new: Boolean!
+}
+```
+
+equipments.js
+
+use_rate와 is_new는 equipments의 타입에 없기 때문에 값을 지정해야 한다.
+
+```javascript
+const resolvers = {
+  Query: {
+    // ...
+    equipmentAdvs: (parent, args) =>
+      dbWorks.getEquipments(args).map(equipment => {
+        if (equipment.used_by === 'developer') {
+          equipment.use_rate = Math.random().toFixed(2);
+        }
+        equipment.is_new = equipment.new_or_used === 'new';
+        return equipment;
+      }),
+  },
+  // ...
+};
+```
+
+\_queries.js
+
+```javascript
+type Query {
+  ...
+  equipmentAdvs: [EquipmentAdv]
+  ...
+}
+```
+
+↓ 쿼리 요청
+
+```javascript
+query {
+  equipmentAdvs {
+    id
+    used_by
+    count
+    use_rate
+    is_new
+  }
+}
+```
+
+</div>
+</details>
