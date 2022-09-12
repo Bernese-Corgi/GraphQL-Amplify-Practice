@@ -1,10 +1,21 @@
 import { ApolloServer, gql } from "apollo-server";
 
 const typeDefs = gql`
+  type User {
+    id: ID
+    username: String
+  }
+
+  type Tweet {
+    id: ID
+    text: String
+    author: User
+  }
+
   # 루트 타입 : 타입들의 집합
   type Query {
-    text: String # 엔드포인트를 노출시키는 것과 같다.
-    hello: String
+    allTweets: [Tweet] # /tweets
+    tweet(id: ID): Tweet # /tweet/:id 라고 생각할 수 있다.
   }
 `
 
