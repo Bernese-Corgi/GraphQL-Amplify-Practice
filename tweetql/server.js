@@ -1,6 +1,6 @@
 import { ApolloServer, gql } from "apollo-server";
 
-const tweets = [
+let tweets = [
   { id: '1', text: 'hello 1' },
   { id: '2', text: 'hello 2' },
   { id: '3', text: 'hello 3' },
@@ -41,6 +41,27 @@ const resolvers = {
     tweet(root, { id }) {
       return tweets.find(tweet => tweet.id === id)
     },
+  },
+
+    Mutation: {
+      postTweet(root, { text, userId }) {
+        const newTweet = {
+          id: tweets.length + 1,
+          text,
+        }
+
+        tweets.push(newTweet)
+
+        return newTweet
+      },
+
+      deleteTweet(root, { id }) {
+        const tweet = tweets.find(_tweet => _tweet.id === id)
+        if (!tweet) return false
+
+        tweets = tweets.filter(tweet => tweet.id !== id)
+        return true
+      },
   }
 }
 
