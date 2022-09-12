@@ -17,6 +17,12 @@ const typeDefs = gql`
     allTweets: [Tweet] # /tweets
     tweet(id: ID): Tweet # /tweet/:id 라고 생각할 수 있다.
   }
+
+  # 뮤테이션
+  type Mutation {
+    postTweet(text: String, userId: ID): Tweet
+    deleteTweet(id: ID): Boolean
+  }
 `
 
 const server = new ApolloServer({ typeDefs })
